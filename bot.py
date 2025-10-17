@@ -3,7 +3,7 @@ import os
 import tempfile
 
 # Replace with your bot token from BotFather
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = "8178921722:AAFGV1bk9C5a93FZKkQwNEF_flf1boWLsKQ"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 

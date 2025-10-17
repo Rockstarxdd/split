@@ -12,29 +12,26 @@ user_files = {}
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    bot.reply_to(message, "👋 Hello! Main text file split bot hoon.
+    bot.reply_to(message, "Hello! Main text file split bot hoon.
 
-📄 Mujhe ek text file bhejo
-✂️ Phir /spl <number> command se reply karo
+File bhejo aur /spl command use karo!
 
 Example: /spl 10")
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    help_text = """
-🤖 **Bot Usage:**
+    help_text = """Bot Usage:
 
-1️⃣ Mujhe ek text file bhejo (.txt file)
-2️⃣ Us file ko reply karte hue command bhejo: /spl <number>
-3️⃣ Main tumhe split files bhej dunga
+1. Mujhe ek text file bhejo (.txt file)
+2. Us file ko reply karte hue command bhejo: /spl <number>
+3. Main tumhe split files bhej dunga
 
-**Example:**
-- /spl 10 → Har file me 10 lines
-- /spl 20 → Har file me 20 lines
-- /spl 50 → Har file me 50 lines
+Example:
+- /spl 10 (Har file me 10 lines)
+- /spl 20 (Har file me 20 lines)
+- /spl 50 (Har file me 50 lines)
 
-**Note:** File ko reply karna zaroori hai!
-    """
+Note: File ko reply karna zaroori hai!"""
     bot.reply_to(message, help_text)
 
 @bot.message_handler(content_types=['document'])
@@ -46,7 +43,7 @@ def handle_document(message):
         
         # Check if it's a text file
         if not file_name.endswith('.txt'):
-            bot.reply_to(message, "⚠️ Sirf .txt files support karti hoon!")
+            bot.reply_to(message, "Sirf .txt files support karti hoon!")
             return
         
         # Store file info for this user
@@ -57,14 +54,14 @@ def handle_document(message):
             'message_id': message.message_id
         }
         
-        bot.reply_to(message, f"✅ File received: {file_name}
+        bot.reply_to(message, f"File received: {file_name}
 
 Ab is message ko reply karte hue /spl <number> command bhejo.
 
 Example: /spl 10")
         
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: {str(e)}")
+        bot.reply_to(message, f"Error: {str(e)}")
 
 @bot.message_handler(commands=['spl'])
 def split_command(message):
@@ -72,7 +69,7 @@ def split_command(message):
         # Check if command has a number
         command_parts = message.text.split()
         if len(command_parts) < 2:
-            bot.reply_to(message, "⚠️ Please provide split amount!
+            bot.reply_to(message, "Please provide split amount!
 
 Example: /spl 10")
             return
@@ -82,25 +79,25 @@ Example: /spl 10")
             if split_amount <= 0:
                 raise ValueError
         except ValueError:
-            bot.reply_to(message, "⚠️ Valid number provide karo!
+            bot.reply_to(message, "Valid number provide karo!
 
 Example: /spl 10")
             return
         
         # Check if this is a reply to a document
         if not message.reply_to_message or message.reply_to_message.content_type != 'document':
-            bot.reply_to(message, "⚠️ Pehle text file bhejo, phir us file ko reply karte hue /spl command use karo!")
+            bot.reply_to(message, "Pehle text file bhejo, phir us file ko reply karte hue /spl command use karo!")
             return
         
         user_id = message.from_user.id
         
         # Check if we have file info
         if user_id not in user_files:
-            bot.reply_to(message, "⚠️ File nahi mili! Pehle file bhejo.")
+            bot.reply_to(message, "File nahi mili! Pehle file bhejo.")
             return
         
         # Send processing message
-        processing_msg = bot.reply_to(message, "⏳ Processing your file...")
+        processing_msg = bot.reply_to(message, "Processing your file...")
         
         file_data = user_files[user_id]
         file_info = file_data['file_info']
@@ -125,11 +122,11 @@ Example: /spl 10")
             num_files = (total_lines + split_amount - 1) // split_amount
             
             bot.edit_message_text(
-                f"📊 Total Lines: {total_lines}
-✂️ Split Amount: {split_amount}
-📁 Files to create: {num_files}
+                f"Total Lines: {total_lines}
+Split Amount: {split_amount}
+Files to create: {num_files}
 
-⏳ Creating files...",
+Creating files...",
                 message.chat.id,
                 processing_msg.message_id
             )
@@ -154,27 +151,26 @@ Example: /spl 10")
                     bot.send_document(
                         message.chat.id,
                         f,
-                        caption=f"📄 {split_file_name}
-📊 Lines: {len(split_lines)}"
+                        caption=f"{split_file_name} - Lines: {len(split_lines)}"
                     )
             
             # Delete processing message and send completion message
             bot.delete_message(message.chat.id, processing_msg.message_id)
-            bot.reply_to(message, f"✅ Done! {num_files} files sent successfully!")
+            bot.reply_to(message, f"Done! {num_files} files sent successfully!")
         
         # Clean up stored file info
         del user_files[user_id]
         
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: {str(e)}")
+        bot.reply_to(message, f"Error: {str(e)}")
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
-    bot.reply_to(message, "ℹ️ Main sirf text files split kar sakta hoon.
+    bot.reply_to(message, "Main sirf text files split kar sakta hoon.
 
-📄 File bhejo aur /spl command use karo!
+File bhejo aur /spl command use karo!
 /help ke liye help dekho.")
 
 # Start bot
-print("🤖 Bot is running...")
+print("Bot is running...")
 bot.infinity_polling()
